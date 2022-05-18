@@ -7,8 +7,8 @@ number_mels = 64
 hop_length = 256  # 86  # 173  # 512
 window_length = 16380  # 11025  # 22050   # 65520
 
-aug = ""
-folds = ["fold0", "fold1", "fold2", "fold3", "fold4"]
+aug = ""  # if you use the classical augmentations, you have to apply them to the waveform directly and then generate spectrograms from the augmented waveforms
+folds = ["fold0", "fold1", "fold2", "fold3", "fold4"]  # folds are generated with the script "SplitUtils"
 
 for fold in folds:
 
