@@ -8,7 +8,7 @@ hop_length = 256  # 86  # 173  # 512
 window_length = 16380  # 11025  # 22050   # 65520
 
 aug = ""
-folds = [""]
+folds = ["fold0", "fold1", "fold2", "fold3", "fold4"]
 
 for fold in folds:
 
