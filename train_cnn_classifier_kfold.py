@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import *
 from tensorflow.keras.callbacks import *
 from tensorflow.keras.models import Model, Sequential
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report, f1_score
 from tensorflow.keras.applications.resnet import ResNet50
 
 from models.resnet import ResNet18
@@ -13,14 +13,14 @@ import tensorflow.keras.backend as K
 dataset_path = "./spectrograms/THA4-kfold-64"
 
 # augmentations = ""
-# augmentations = "-cwgan-gp-580"
+augmentations = "-cwgan-gp-580"
 # augmentations = "-cwgan-gp-580-double"
 # augmentations = "-cgan-2"
 # augmentations = "-cvae"
 # augmentations = "-pitch-shift"
 # augmentations = "-time-stretch"
 # augmentations = "-noise"
-augmentations = "-spec-augment"
+# augmentations = "-spec-augment"
 
 for count_runs in range(3):
 
@@ -35,7 +35,7 @@ for count_runs in range(3):
     cm_list = []
     cr_list = []
     accuracies_list = []
-    mean_per_class_acc = []
+    macro_f1 = []
 
     for i in range(5):
 
@@ -124,14 +124,10 @@ for count_runs in range(3):
         print(cr)
         cr_list.append(cr)
 
-        print('Per class accuracies')
-        accuracies = cm.diagonal() / cm.sum(axis=1)
-        print(accuracies)
-        accuracies_list.append(accuracies)
-
-        print('Mean per-class recall')
-        print(sum(accuracies) / n_classes)
-        mean_per_class_acc.append(sum(accuracies) / n_classes)
+        print('Macro F1-score')
+        F1_score = f1_score(labels_test.argmax(axis=1), (y_pred > 0.5).argmax(axis=1), average='macro')
+        print(F1_score)
+        macro_f1.append(F1_score)
 
         K.clear_session()
 
@@ -142,12 +138,7 @@ for count_runs in range(3):
     print('Confusion Matrix (Std)')
     print(np.std(cm_list, axis=0))
 
-    print('Per class accuracies (Mean)')
-    print(np.mean(accuracies_list, axis=0))
-    print('Per class accuracies (Std)')
-    print(np.std(accuracies_list, axis=0))
-
-    print('Mean per-class recall (Mean)')
-    print(np.mean(mean_per_class_acc, axis=0))
-    print('Mean per-class recall (Std)')
-    print(np.std(mean_per_class_acc, axis=0))
+    print('Macro F1-score (Mean)')
+    print(np.mean(macro_f1, axis=0))
+    print('Macro F1-score (Std)')
+    print(np.std(macro_f1, axis=0))

@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import *
 from tensorflow.keras.callbacks import *
 from tensorflow.keras.models import Model, Sequential
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report, f1_score
 from tensorflow.keras.applications.resnet import ResNet50
 
 from models.resnet import ResNet18
@@ -94,11 +94,8 @@ target_names = np_loader_train.classes
 cr = classification_report(labels_test.argmax(axis=1), (y_pred > 0.5).argmax(axis=1), target_names=target_names)
 print(cr)
 
-print('Per class accuracies')
-accuracies = cm.diagonal() / cm.sum(axis=1)
-print(accuracies)
-
-print('Mean per-class recall')
-print(sum(accuracies) / n_classes)
+print('Macro F1-score')
+F1_score = f1_score(labels_test.argmax(axis=1), (y_pred > 0.5).argmax(axis=1), average='macro')
+print(F1_score)
 
 model.save("./checkpoints/inception_score_model.hdf5")
